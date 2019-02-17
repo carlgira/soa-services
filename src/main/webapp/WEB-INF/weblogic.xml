@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wls:weblogic-web-app
+        xmlns:wls="http://xmlns.oracle.com/weblogic/weblogic-web-app"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+        http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd
+        http://xmlns.oracle.com/weblogic/weblogic-web-app
+        http://xmlns.oracle.com/weblogic/weblogic-web-app/1.4/weblogic-web-app.xsd">
+
+    <wls:context-root>/soa-services</wls:context-root>
+
+    <wls:container-descriptor>
+       <!-- <wls:prefer-web-inf-classes>true</wls:prefer-web-inf-classes> -->
+
+        <wls:prefer-application-packages>
+            <wls:package-name>org.slf4j</wls:package-name>
+            <wls:package-name>org.springframework.*</wls:package-name>
+            <wls:package-name>com.fasterxml.jackson.*</wls:package-name>
+            <wls:package-name>com.google.common.*</wls:package-name>
+            <wls:package-name>org.apache.xmlbeans.*</wls:package-name>
+            <wls:package-name>org.eclipse.persistence.*</wls:package-name>
+            <!--
+            <wls:package-name>org.hibernate.*</wls:package-name>
+            <wls:package-name>org.jboss.*</wls:package-name>
+            <wls:package-name>javax.validation.*</wls:package-name>
+            <wls:package-name>javax.persistence.*</wls:package-name>
+            -->
+        </wls:prefer-application-packages>
+
+</wls:container-descriptor>
+
+<wls:library-ref>
+<wls:library-name>oracle.rules</wls:library-name>
+</wls:library-ref>
+
+<wls:library-ref>
+<wls:library-name>oracle.soa.workflow</wls:library-name>
+</wls:library-ref>
+
+<!-- BPM
+<library-ref>
+<library-name>oracle.bpm.client</library-name>
+</library-ref>
+<library-ref>
+<library-name>oracle.bpm.workspace</library-name>
+</library-ref>
+<library-ref>
+<library-name>oracle.bpm.runtime</library-name>
+</library-ref>
+-->
+
+
+    <wls:security-role-assignment>
+        <wls:role-name>soaServicesRole</wls:role-name>
+        <wls:principal-name>soaServicesGroup</wls:principal-name>
+    </wls:security-role-assignment>
+
+
+</wls:weblogic-web-app>
