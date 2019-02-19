@@ -1,23 +1,15 @@
 package com.carlgira.soa.model.soa;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
-import java.math.BigDecimal;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import java.io.Serializable;
 
-public class SensorInfo {
+@Entity
+public class SensorInfo  implements Serializable {
 
-    @Id
-    @Column(name="CIKEY")
-    private Long cikey;
-
-    @Column(name="FLOW_ID")
-    private BigDecimal flowid;
-
-    @Column(name="COMPONENT_NAME")
-    private String componentName;
-
-    @Column(name="SENSOR_NAME")
-    private String name;
+    @EmbeddedId
+    private SensorInfoId id;
 
     @Column(name="SENSOR_VALUE")
     private String value;
@@ -25,36 +17,12 @@ public class SensorInfo {
     public SensorInfo() {
     }
 
-    public Long getCikey() {
-        return cikey;
+    public SensorInfoId getId() {
+        return id;
     }
 
-    public void setCikey(Long cikey) {
-        this.cikey = cikey;
-    }
-
-    public BigDecimal getFlowid() {
-        return flowid;
-    }
-
-    public void setFlowid(BigDecimal flowid) {
-        this.flowid = flowid;
-    }
-
-    public String getComponentName() {
-        return componentName;
-    }
-
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setId(SensorInfoId id) {
+        this.id = id;
     }
 
     public String getValue() {
@@ -63,5 +31,13 @@ public class SensorInfo {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "SensorInfo{" +
+                "id=" + id +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

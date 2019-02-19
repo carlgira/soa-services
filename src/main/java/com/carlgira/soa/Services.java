@@ -5,6 +5,7 @@ import com.carlgira.soa.model.*;
 import com.carlgira.soa.model.soa.DeployedComposite;
 import com.carlgira.soa.model.soa.FlowInfo;
 import com.carlgira.soa.model.soa.SensorInfo;
+import com.carlgira.soa.model.soa.SensorInfoId;
 import com.carlgira.soa.util.ServerConnection;
 import oracle.soa.management.facade.flow.FlowInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,7 +127,9 @@ public class Services {
 
         if((r.getFlowids() == null || r.getFlowids().isEmpty()) &&
                 (r.getEcids() == null || r.getEcids().isEmpty()) &&
-                (r.getCikeys() == null || r.getCikeys().isEmpty())
+                (r.getCikeys() == null || r.getCikeys().isEmpty() &&
+                (r.getSensorValues() == null || r.getSensorValues().isEmpty())
+                )
         ){
             if((r.getComposite() == null || r.getComposite().trim().isEmpty()) &&
                     (r.getRevision() == null || r.getRevision().trim().isEmpty())){
@@ -195,14 +198,27 @@ public class Services {
     @CrossOrigin(origins = "*")
     @Cacheable("soaServicesCache")
     @RequestMapping( path = "/sensor/names", method = RequestMethod.GET)
-    public List<SensorInfo> sensorNames() {
-        return sensorInfoRepository.findBySensorNames();
+    public List<String> sensorNames() {
+
+        List<String> responses = new ArrayList<>();
+        for(SensorInfo e : sensorInfoRepository.findBySensorNames()){
+            responses.add(e.getId().getName());
+        }
+
+        return responses;
     }
 
     @CrossOrigin(origins = "*")
     @RequestMapping( path = "/sensor", method = RequestMethod.GET)
     public List<SensorInfo> sensorByCikey(@RequestParam Long cikey) {
-        return sensorInfoRepository.findByCikey(cikey);
+
+        List<SensorInfo> s = sensorInfoRepository.findByCikey(cikey);
+
+        for(SensorInfo e : s){
+            System.out.println(e);
+        }
+
+        return s;
     }
 
     @Scheduled(fixedDelay = 60000)
