@@ -127,9 +127,8 @@ public class Services {
 
         if((r.getFlowids() == null || r.getFlowids().isEmpty()) &&
                 (r.getEcids() == null || r.getEcids().isEmpty()) &&
-                (r.getCikeys() == null || r.getCikeys().isEmpty() &&
+                (r.getCikeys() == null || r.getCikeys().isEmpty()) &&
                 (r.getSensorValues() == null || r.getSensorValues().isEmpty())
-                )
         ){
             if((r.getComposite() == null || r.getComposite().trim().isEmpty()) &&
                     (r.getRevision() == null || r.getRevision().trim().isEmpty())){
@@ -143,19 +142,40 @@ public class Services {
             }
         }
         else if(r.getFlowids() != null && !r.getFlowids().isEmpty()){
-            cubeInstances = this.compositeRepository.findByFlowIdAndDates(r.getFlowids().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
-            System.out.println("this.compositeRepository.findByFlowIdAndDates");
+
+            if(r.getComposite() != null && r.getComposite().trim().length() > 0 && r.getRevision() != null && r.getRevision().trim().length() > 0){
+                cubeInstances = this.compositeRepository.findByFlowIdAndNameAndDates(r.getFlowids().get(0),  r.getComposite() , r.getRevision(), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+                System.out.println("this.compositeRepository.findByFlowIdAndNameAndDates");
+            }
+            else{
+                cubeInstances = this.compositeRepository.findByFlowIdAndDates(r.getFlowids().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+                System.out.println("this.compositeRepository.findByFlowIdAndDates");
+            }
         }
         else if(r.getCikeys() != null && !r.getCikeys().isEmpty()){
-            cubeInstances = this.compositeRepository.findByCikeyAndDates(r.getCikeys().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
-            System.out.println("this.compositeRepository.findByCikeyAndDates");
+
+            if(r.getComposite() != null && r.getComposite().trim().length() > 0 && r.getRevision() != null && r.getRevision().trim().length() > 0){
+                cubeInstances = this.compositeRepository.findByCikeyAndDates(r.getCikeys().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+                System.out.println("this.compositeRepository.findByCikeyAndDates");
+            }
+            else{
+                cubeInstances = this.compositeRepository.findByCikeyAndNameAndDates(r.getCikeys().get(0), r.getComposite() , r.getRevision() , new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+                System.out.println("this.compositeRepository.findByCikeyAndNameAndDates");
+            }
         }
         else if(r.getEcids() != null && !r.getEcids().isEmpty()){
-            cubeInstances = this.compositeRepository.findByEcidAndDates(r.getEcids().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
-            System.out.println("this.compositeRepository.findByEcidAndDates");
+
+            if(r.getComposite() != null && r.getComposite().trim().length() > 0 && r.getRevision() != null && r.getRevision().trim().length() > 0){
+                cubeInstances = this.compositeRepository.findByEcidAndNameAndDates(r.getEcids().get(0), r.getComposite() , r.getRevision(), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+                System.out.println("this.compositeRepository.findByEcidAndNameAndDates");
+            }
+            else{
+                cubeInstances = this.compositeRepository.findByEcidAndDates(r.getEcids().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+                System.out.println("this.compositeRepository.findByEcidAndDates");
+            }
         }
         else if(r.getSensorValues() != null && !r.getSensorValues().isEmpty()){
-            cubeInstances = this.compositeRepository.findBySensorAndDates(r.getSensorName(), r.getSensorValues().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+            cubeInstances = this.compositeRepository.findBySensorAndDates(r.getSensorName(), r.getSensorValues().get(0), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getComposite(),  r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
             System.out.println("this.compositeRepository.findBySensorAndDates");
         }
 

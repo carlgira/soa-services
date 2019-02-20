@@ -1,3 +1,4 @@
 soa-services.*
 .DS_Store
 src/main/main.iml
+target
