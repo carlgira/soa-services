@@ -1,9 +1,13 @@
 package com.carlgira.soa.managers;
 
 import com.carlgira.soa.util.ServerConnection;
+import oracle.bpm.services.common.exception.BPMException;
 import oracle.soa.management.facade.*;
+import oracle.soa.management.facade.bpel.BPELInstance;
 import oracle.soa.management.facade.flow.FlowInstance;
 
+import oracle.soa.management.util.ComponentFilter;
+import oracle.soa.management.util.ComponentInstanceFilter;
 import oracle.soa.management.util.flow.FlowInstanceFilter;
 
 import javax.naming.Context;
@@ -43,12 +47,6 @@ public class SOAManager {
         this.locator.close();
     }
 
-    /**
-     * Return a FlowInstance using a Flowid
-     * @param flowId
-     * @return
-     * @throws Exception
-     */
     public FlowInstance getFlowInstanceByFlowId(Long flowId) throws Exception {
         FlowInstanceFilter flowInstanceFilter = new FlowInstanceFilter();
         flowInstanceFilter.setFlowId(flowId);
@@ -80,4 +78,17 @@ public class SOAManager {
     public void abortFlows(long[] flowsid) throws Exception {
         this.locator.abortFlows(flowsid);
     }
+
+    public BPELInstance getBpelByCikey(String cikey) throws Exception {
+        ComponentInstanceFilter instanceFilter = new ComponentInstanceFilter();
+        instanceFilter.setCompositeInstanceId(cikey);
+
+        BPELInstance bpelInstance = (BPELInstance)locator.getComponentInstances(instanceFilter);
+
+        return bpelInstance;
+    }
+
+
+
+
 }

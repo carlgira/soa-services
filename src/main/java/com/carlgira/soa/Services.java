@@ -2,10 +2,7 @@ package com.carlgira.soa;
 
 import com.carlgira.soa.managers.SOAManager;
 import com.carlgira.soa.model.*;
-import com.carlgira.soa.model.soa.DeployedComposite;
-import com.carlgira.soa.model.soa.FlowInfo;
-import com.carlgira.soa.model.soa.SensorInfo;
-import com.carlgira.soa.model.soa.SensorInfoId;
+import com.carlgira.soa.model.soa.*;
 import com.carlgira.soa.util.ServerConnection;
 import oracle.soa.management.facade.flow.FlowInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @CacheConfig(cacheNames={"soaServicesCache"})
 @RestController
@@ -37,18 +36,19 @@ public class Services {
     @Autowired
     private SensorInfoRepository sensorInfoRepository;
 
+    @Autowired
+    private ComponentInfoRepository componentInfoRepository;
+
+    @Autowired
+    private TaskInfoRepository taskInfoRepository;
+
     public Services(){
     }
 
     @RequestMapping( path = "/abort",  method = RequestMethod.GET)
     public AbortResponse abortFlow(@RequestParam(value = "flowid", required = true) long flowid){
 
-        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
-        String authorization = new String(decodedBytes);
-        String user = authorization.split(":")[0];
-        String password = authorization.split(":")[1];
-
-        ServerConnection serverConnection = new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
+        ServerConnection serverConnection = this.getServerConnection();
         SOAManager compositeManager = new SOAManager(serverConnection);
         try {
             compositeManager.init();
@@ -193,12 +193,9 @@ public class Services {
         DeployedCompositeResponse response = new DeployedCompositeResponse();
         List<DeployedComposite> composites = new ArrayList<>();
 
-        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
-        String authorization = new String(decodedBytes);
-        String user = authorization.split(":")[0];
-        String password = authorization.split(":")[1];
+        ServerConnection serverConnection = this.getServerConnection();
 
-        CompositeManager.initConnection(this.request.getLocalName(), String.valueOf(this.request.getLocalPort()), user, password);
+        CompositeManager.initConnection(this.request.getLocalName(), String.valueOf(this.request.getLocalPort()), serverConnection.adminUser, serverConnection.adminPassword);
         String value = CompositeManager.listDeployedComposites(CompositeManager.getCompositeLifeCycleMBean());
 
         StringTokenizer tokenizer = new StringTokenizer(value, "\n");
@@ -234,12 +231,59 @@ public class Services {
 
         List<SensorInfo> s = sensorInfoRepository.findByCikey(cikey);
 
-        for(SensorInfo e : s){
-            System.out.println(e);
-        }
-
         return s;
     }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping( path = "/flow", method = RequestMethod.GET)
+    public List<ComponentInfo> componentInfo(@RequestParam(value = "flowid", required = true) long flowid) throws Exception {
+
+        List<ComponentInfo> components = componentInfoRepository.findByFlowId(flowid);
+
+        List<TaskInfo> tasks = taskInfoRepository.findByFlowId(flowid);
+
+        Map<Long, ComponentInfo> coMap = components.stream().collect(Collectors.toMap(ComponentInfo::getCikey, Function.identity()));
+
+        List<ComponentInfo> response = new ArrayList<>();
+
+        Long currentCikey = -1L;
+        for(TaskInfo t: tasks){
+            if(!t.getCikey().equals(currentCikey)){
+                currentCikey = t.getCikey();
+            }
+            coMap.get(currentCikey).getTasks().add(t);
+        }
+
+        int counter = 0;
+        int size = components.size();
+        while(!components.isEmpty() && counter < size){
+            ComponentInfo currentComp = components.get(components.size()-1);
+            if(currentComp.getParent() != null && coMap.containsKey(currentComp.getParent())){
+                coMap.get(currentComp.getParent()).getComponents().add(currentComp);
+                components.remove(components.size()-1);
+            }
+            counter++;
+        }
+
+        for(ComponentInfo c: coMap.values()){
+            if(c.getParent() == null){
+                response.add(c);
+            }
+        }
+
+        return response;
+    }
+
+    private ServerConnection getServerConnection(){
+        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
+        String authorization = new String(decodedBytes);
+        String user = authorization.split(":")[0];
+        String password = authorization.split(":")[1];
+
+        return new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
+    }
+
+
 
     @Scheduled(fixedDelay = 60000)
     public void clearCache(){

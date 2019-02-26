@@ -66,6 +66,33 @@
             <version>${soa-version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- BPM -->
+        <dependency>
+            <groupId>com.oracle.soa.all.client</groupId>
+            <artifactId>bpm-services</artifactId>
+            <version>${soa-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.bpm</groupId>
+            <artifactId>oracle.bpm.bpm-services.client</artifactId>
+            <version>${soa-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.soa</groupId>
+            <artifactId>oracle.bpm.bpm-services.interface</artifactId>
+            <version>${soa-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.bpm</groupId>
+            <artifactId>oracle.bpm.bpm-services.interface</artifactId>
+            <version>${soa-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- BPM -->
     </dependencies>
 
     <build>
