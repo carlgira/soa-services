@@ -66,7 +66,6 @@
             <version>${soa-version}</version>
             <scope>provided</scope>
         </dependency>
-
         <!-- BPM -->
         <dependency>
             <groupId>com.oracle.soa.all.client</groupId>
@@ -89,6 +88,18 @@
         <dependency>
             <groupId>com.oracle.bpm</groupId>
             <artifactId>oracle.bpm.bpm-services.interface</artifactId>
+            <version>${soa-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.fmwshare</groupId>
+            <artifactId>xml</artifactId>
+            <version>${soa-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.fmwshare</groupId>
+            <artifactId>jrf_ws_client.com.oracle.webservices.fmw.client</artifactId>
             <version>${soa-version}</version>
             <scope>provided</scope>
         </dependency>

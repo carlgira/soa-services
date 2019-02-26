@@ -7,10 +7,10 @@ import oracle.bpel.services.workflow.client.WorkflowServiceClientFactory;
 import oracle.bpm.client.BPMServiceClientFactory;
 import oracle.bpm.services.common.exception.BPMException;
 import oracle.bpm.services.instancequery.IAuditInstance;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import oracle.bpm.services.instancequery.IInstanceQueryService;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by cgiraldo on 04/05/2017.
@@ -35,6 +35,45 @@ public class BpmAuditTrailManager{
 
         this.bpmServiceClientFactory = BPMServiceClientFactory.getInstance(properties, null, null);
         this.bpmContext = bpmServiceClientFactory.getBPMUserAuthenticationService().getBPMContextForAuthenticatedUser();
+    }
+
+    static enum IMAGE_TYPE {
+        PROCESS,
+        AUDIT,
+    };
+
+    public byte[] getBpmDiagrama(String instanceId, String type) {
+        BpmAuditTrailManager.IMAGE_TYPE imageType;
+        if (type.equalsIgnoreCase("Process")) {
+            imageType = BpmAuditTrailManager.IMAGE_TYPE.PROCESS;
+        } else if (type.equalsIgnoreCase("Audit")) {
+            imageType = BpmAuditTrailManager.IMAGE_TYPE.AUDIT;
+        } else {
+            imageType = null;
+            System.err.println("Specify \"Audit\", or \"Process\" as 3rd argument.");
+            System.exit(1);
+        }
+
+        String base64 = null;
+        try {
+            bpmContext = bpmServiceClientFactory.getBPMUserAuthenticationService().getBPMContextForAuthenticatedUser();
+            IInstanceQueryService instanceQueryService =
+                    bpmServiceClientFactory.getBPMServiceClient().getInstanceQueryService();
+            if (imageType.equals(BpmAuditTrailManager.IMAGE_TYPE.PROCESS)) {
+                base64 = instanceQueryService.getProcessDiagram(bpmContext, instanceId, Locale.US);
+            } else if (imageType.equals(BpmAuditTrailManager.IMAGE_TYPE.AUDIT)) {
+                base64 = instanceQueryService.getProcessAuditDiagram(bpmContext, instanceId, Locale.US);
+            }
+        } catch (BPMException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            return Base64.getDecoder().decode(new String(base64).getBytes("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private List<CEvent> getAuditTrail(String id) throws BPMException {

@@ -1,6 +1,5 @@
 package com.carlgira.soa;
 
-import com.carlgira.soa.managers.audit.AuditProcessImage;
 import com.carlgira.soa.util.ServerConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

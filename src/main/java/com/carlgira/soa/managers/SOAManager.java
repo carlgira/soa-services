@@ -1,12 +1,9 @@
 package com.carlgira.soa.managers;
 
 import com.carlgira.soa.util.ServerConnection;
-import oracle.bpm.services.common.exception.BPMException;
 import oracle.soa.management.facade.*;
 import oracle.soa.management.facade.bpel.BPELInstance;
 import oracle.soa.management.facade.flow.FlowInstance;
-
-import oracle.soa.management.util.ComponentFilter;
 import oracle.soa.management.util.ComponentInstanceFilter;
 import oracle.soa.management.util.flow.FlowInstanceFilter;
 
@@ -55,7 +52,6 @@ public class SOAManager {
         if(flowInstances == null || flowInstances.size() != 1){
             return null;
         }
-
         return flowInstances.get(0);
     }
 
@@ -87,8 +83,4 @@ public class SOAManager {
 
         return bpelInstance;
     }
-
-
-
-
 }

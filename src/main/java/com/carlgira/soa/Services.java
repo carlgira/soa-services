@@ -45,6 +45,8 @@ public class Services {
     public Services(){
     }
 
+
+    @CrossOrigin(origins = "*")
     @RequestMapping( path = "/abort",  method = RequestMethod.GET)
     public AbortResponse abortFlow(@RequestParam(value = "flowid", required = true) long flowid){
 
@@ -64,15 +66,11 @@ public class Services {
         return new AbortResponse("ok","" + flowid);
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping( path = "/delete",  method = RequestMethod.GET)
     public AbortResponse deleteFlow(@RequestParam(value = "flowid", required = true) long flowid){
 
-        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
-        String authorization = new String(decodedBytes);
-        String user = authorization.split(":")[0];
-        String password = authorization.split(":")[1];
-
-        ServerConnection serverConnection = new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
+        ServerConnection serverConnection = this.getServerConnection();
         SOAManager compositeManager = new SOAManager(serverConnection);
         try {
             compositeManager.init();
@@ -88,15 +86,11 @@ public class Services {
         return new AbortResponse("ok","" + flowid);
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping( path = "/abort", method = RequestMethod.POST)
     public AbortResponse abortFlows(@RequestBody AbortRequest abortRequest){
 
-        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
-        String authorization = new String(decodedBytes);
-        String user = authorization.split(":")[0];
-        String password = authorization.split(":")[1];
-
-        ServerConnection serverConnection = new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
+        ServerConnection serverConnection = this.getServerConnection();
         SOAManager compositeManager = new SOAManager(serverConnection);
         try {
             compositeManager.init();
@@ -113,7 +107,6 @@ public class Services {
         return new AbortResponse("ok","");
     }
 
-
     @CrossOrigin(origins = "*")
     @RequestMapping( path = "/composites", method = RequestMethod.POST)
     public ListOfCompositesResponse listOfComposites(@RequestBody ListOfCompositesRequest r){
@@ -122,8 +115,6 @@ public class Services {
         Date startDate = r.getStartDate();
 
         List<FlowInfo> cubeInstances = null;
-
-        System.out.println("Request " + r.toString());
 
         if((r.getFlowids() == null || r.getFlowids().isEmpty()) &&
                 (r.getEcids() == null || r.getEcids().isEmpty()) &&
@@ -282,8 +273,6 @@ public class Services {
 
         return new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
     }
-
-
 
     @Scheduled(fixedDelay = 60000)
     public void clearCache(){
