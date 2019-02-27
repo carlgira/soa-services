@@ -27,33 +27,34 @@
             -->
         </wls:prefer-application-packages>
 
-</wls:container-descriptor>
+    </wls:container-descriptor>
 
-<wls:library-ref>
-<wls:library-name>oracle.rules</wls:library-name>
-</wls:library-ref>
+    <wls:library-ref>
+        <wls:library-name>oracle.rules</wls:library-name>
+    </wls:library-ref>
 
-<wls:library-ref>
-<wls:library-name>oracle.soa.workflow</wls:library-name>
-</wls:library-ref>
+    <wls:library-ref>
+        <wls:library-name>oracle.soa.workflow</wls:library-name>
+    </wls:library-ref>
 
-<!-- BPM
-<library-ref>
-<library-name>oracle.bpm.client</library-name>
-</library-ref>
-<library-ref>
-<library-name>oracle.bpm.workspace</library-name>
-</library-ref>
-<library-ref>
-<library-name>oracle.bpm.runtime</library-name>
-</library-ref>
--->
 
+    <wls:library-ref>
+        <wls:library-name>oracle.bpm.client</wls:library-name>
+    </wls:library-ref>
+
+    <!--
+    <wls:library-ref>
+        <wls:library-name>oracle.bpm.workspace</wls:library-name>
+    </wls:library-ref>
+    <wls:library-ref>
+        <wls:library-name>oracle.bpm.runtime</wls:library-name>
+    </wls:library-ref>
+
+    -->
 
     <wls:security-role-assignment>
         <wls:role-name>soaServicesRole</wls:role-name>
         <wls:principal-name>soaServicesGroup</wls:principal-name>
     </wls:security-role-assignment>
-
 
 </wls:weblogic-web-app>

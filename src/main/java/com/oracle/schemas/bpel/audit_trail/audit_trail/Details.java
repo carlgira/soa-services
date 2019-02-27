@@ -1,6 +1,7 @@
 package com.oracle.schemas.bpel.audit_trail.audit_trail;
 
 import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 
 
 /**
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.*;
     "value"
 })
 @XmlRootElement(name = "details")
-public class Details {
+public class Details implements Serializable {
 
     @XmlValue
     protected String value;

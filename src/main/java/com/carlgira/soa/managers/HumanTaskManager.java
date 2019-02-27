@@ -132,9 +132,7 @@ public class HumanTaskManager {
         try {
             ITaskQueryService querySvc = wfsvcClient.getTaskQueryService();
 
-            //ctx = querySvc.authenticate(this.serverConnection.adminUser, this.serverConnection.adminPassword.toCharArray(), this.serverConnection.realm);
-
-            List queryColumns = new ArrayList<>();
+            List<String> queryColumns = new ArrayList<>();
             queryColumns.add(TableConstants.WFTASK_TASKID_COLUMN.getName());
             queryColumns.add(TableConstants.WFTASK_TASKNUMBER_COLUMN.getName());
             queryColumns.add(TableConstants.WFTASK_TITLE_COLUMN.getName());

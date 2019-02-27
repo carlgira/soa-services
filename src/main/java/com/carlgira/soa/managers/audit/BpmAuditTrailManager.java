@@ -42,16 +42,14 @@ public class BpmAuditTrailManager{
         AUDIT,
     };
 
-    public byte[] getBpmDiagrama(String instanceId, String type) {
+    public byte[] getBpmDiagram(String instanceId, String type) {
         BpmAuditTrailManager.IMAGE_TYPE imageType;
-        if (type.equalsIgnoreCase("Process")) {
+        if (type.equalsIgnoreCase("process")) {
             imageType = BpmAuditTrailManager.IMAGE_TYPE.PROCESS;
-        } else if (type.equalsIgnoreCase("Audit")) {
+        } else if (type.equalsIgnoreCase("audit")) {
             imageType = BpmAuditTrailManager.IMAGE_TYPE.AUDIT;
         } else {
-            imageType = null;
-            System.err.println("Specify \"Audit\", or \"Process\" as 3rd argument.");
-            System.exit(1);
+            return null;
         }
 
         String base64 = null;
@@ -76,10 +74,8 @@ public class BpmAuditTrailManager{
         return null;
     }
 
-    private List<CEvent> getAuditTrail(String id) throws BPMException {
-
+    public List<IAuditInstance> getAuditTrail(String id) throws BPMException {
         List<IAuditInstance> auditInstances = this.bpmServiceClientFactory.getBPMServiceClient().getInstanceQueryService().queryAuditInstanceByProcessId(bpmContext, id);
-
-        return new ArrayList<>();
+        return auditInstances;
     }
 }

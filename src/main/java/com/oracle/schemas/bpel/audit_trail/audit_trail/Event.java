@@ -2,6 +2,7 @@ package com.oracle.schemas.bpel.audit_trail.audit_trail;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.Serializable;
 
 
 /**
@@ -58,7 +59,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "detailsTemplate"
 })
 @XmlRootElement(name = "event")
-public class Event {
+public class Event implements Serializable {
 
     @XmlElement(required = true)
     protected String message;

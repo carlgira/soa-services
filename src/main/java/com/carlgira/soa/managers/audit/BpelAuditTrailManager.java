@@ -22,40 +22,22 @@ public class BpelAuditTrailManager{
         this.serverConnection = serverConnection;
     }
 
-    public List<CEvent> getAuditTrail(String id) throws Exception {
+    public AuditTrail getAuditTrail(String id) throws Exception {
         SOAManager soaManager = new SOAManager(this.serverConnection);
+        soaManager.init();
         BPELInstance bpelInstance = soaManager.getBpelByCikey(id);
 
-        if(bpelInstance.getAuditTrail() != null){
+        AuditTrail auditTrail = null;
+
+        if(bpelInstance != null){
             JAXBContext jaxbContext = JAXBContext.newInstance(AuditTrail.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
             StringReader reader = new StringReader(bpelInstance.getAuditTrail());
-
-            AuditTrail auditTrail = (AuditTrail) jaxbUnmarshaller.unmarshal(reader);
+            auditTrail = (AuditTrail) jaxbUnmarshaller.unmarshal(reader);
         }
+        soaManager.close();
 
-        return new ArrayList<>();
+        return auditTrail;
     }
-
-    public static void main(String[] args) throws Exception {
-        System.setProperty("socksProxyHost", "localhost");
-        System.setProperty("socksProxyPort", "8123");
-        System.setProperty("java.net.socks.username", "t719400");
-        System.setProperty("java.net.socks.password", "125WNUme");
-        System.setProperty("java.awt.headless", "true");
-
-        // BSS 30000
-        // OSS 31000
-        ServerConnection serverConnection = new ServerConnection("t3://ephol328.serv.dc.es.telefonica:30000/soa-infra/", "usarqtec", "temporal12", "");
-
-        //BpelAuditTrailManager bpelAuditTrailManager = new BpelAuditTrailManager(serverConnection);
-        //bpelAuditTrailManager.getAuditTrail("983040036");
-
-        SOAManager soaManager = new SOAManager(serverConnection);
-        BPELInstance bpelInstance = soaManager.getBpelByCikey("983040036");
-
-        System.out.println(bpelInstance);
-    }
-
 }

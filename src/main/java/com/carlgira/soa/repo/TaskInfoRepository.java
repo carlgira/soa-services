@@ -1,4 +1,4 @@
-package com.carlgira.soa;
+package com.carlgira.soa.repo;
 
 import com.carlgira.soa.model.soa.TaskInfo;
 import org.springframework.data.jpa.repository.Query;

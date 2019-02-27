@@ -51,6 +51,11 @@
             <version>2.7.0</version>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
@@ -80,32 +85,23 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.oracle.soa</groupId>
-            <artifactId>oracle.bpm.bpm-services.interface</artifactId>
-            <version>${soa-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.oracle.bpm</groupId>
             <artifactId>oracle.bpm.bpm-services.interface</artifactId>
             <version>${soa-version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.oracle.fmwshare</groupId>
-            <artifactId>xml</artifactId>
-            <version>${soa-version}</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>com.oracle.fmwshare</groupId>
             <artifactId>jrf_ws_client.com.oracle.webservices.fmw.client</artifactId>
             <version>${soa-version}</version>
             <scope>provided</scope>
         </dependency>
+
         <!-- BPM -->
     </dependencies>
 
+    <!--
     <build>
         <plugins>
             <plugin>
@@ -114,4 +110,5 @@
             </plugin>
         </plugins>
     </build>
+    -->
 </project>

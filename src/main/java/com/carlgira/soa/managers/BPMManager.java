@@ -38,8 +38,4 @@ public class BPMManager{
         this.bpmServiceClientFactory = BPMServiceClientFactory.getInstance(properties, null, null);
         this.bpmContext = bpmServiceClientFactory.getBPMUserAuthenticationService().getBPMContextForAuthenticatedUser();
     }
-
-    public void getAuditData(String id) throws BPMException {
-        this.auditInstances = this.bpmServiceClientFactory.getBPMServiceClient().getInstanceQueryService().queryAuditInstanceByProcessId(bpmContext, id);
-    }
 }

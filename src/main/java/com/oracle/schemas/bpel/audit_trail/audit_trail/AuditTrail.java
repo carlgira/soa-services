@@ -1,6 +1,7 @@
 package com.oracle.schemas.bpel.audit_trail.audit_trail;
 
 import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ import java.util.List;
     "event"
 })
 @XmlRootElement(name = "audit_trail")
-public class AuditTrail {
+public class AuditTrail implements Serializable {
 
     @XmlElement(required = true)
     protected List<Event> event;

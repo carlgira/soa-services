@@ -30,7 +30,7 @@ public class SOAManager {
      */
     public void init() throws Exception {
 
-        Hashtable jndiProps = new Hashtable();
+        Hashtable<String, String> jndiProps = new Hashtable<>();
         jndiProps.put(Context.PROVIDER_URL, this.serverConnection.server);
         jndiProps.put(Context.INITIAL_CONTEXT_FACTORY,"weblogic.jndi.WLInitialContextFactory");
         jndiProps.put(Context.SECURITY_PRINCIPAL, this.serverConnection.adminUser);
@@ -79,8 +79,14 @@ public class SOAManager {
         ComponentInstanceFilter instanceFilter = new ComponentInstanceFilter();
         instanceFilter.setCompositeInstanceId(cikey);
 
-        BPELInstance bpelInstance = (BPELInstance)locator.getComponentInstances(instanceFilter);
+        //  - with linked exception:
+        //[java.lang.ClassNotFoundException: org.eclipse.persistence.jaxb.JAXBContextFactory]
 
-        return bpelInstance;
+        List<ComponentInstance> r = locator.getComponentInstances(instanceFilter);
+
+        if(r != null && !r.isEmpty()){
+            return (BPELInstance)r.get(0);
+        }
+        return null;
     }
 }
