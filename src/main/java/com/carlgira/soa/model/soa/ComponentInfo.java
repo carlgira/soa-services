@@ -9,12 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class ComponentInfo  implements Serializable {
-
 
     @Id
     @Column(name="CIKEY")
@@ -52,6 +52,8 @@ public class ComponentInfo  implements Serializable {
     private List<TaskInfo> tasks;
 
     public ComponentInfo() {
+        this.tasks = new ArrayList<>();
+        this.components = new ArrayList<>();
     }
 
     public Long getCikey() {

@@ -229,46 +229,6 @@ public class Services {
         return s;
     }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping( path = "/flow", method = RequestMethod.GET)
-    public List<ComponentInfo> componentInfo(@RequestParam(value = "flowid", required = true) long flowid) throws Exception {
-
-        List<ComponentInfo> components = componentInfoRepository.findByFlowId(flowid);
-
-        List<TaskInfo> tasks = taskInfoRepository.findByFlowId(flowid);
-
-        Map<Long, ComponentInfo> coMap = components.stream().collect(Collectors.toMap(ComponentInfo::getCikey, Function.identity()));
-
-        List<ComponentInfo> response = new ArrayList<>();
-
-        Long currentCikey = -1L;
-        for(TaskInfo t: tasks){
-            if(!t.getCikey().equals(currentCikey)){
-                currentCikey = t.getCikey();
-            }
-            coMap.get(currentCikey).getTasks().add(t);
-        }
-
-        int counter = 0;
-        int size = components.size();
-        while(!components.isEmpty() && counter < size){
-            ComponentInfo currentComp = components.get(components.size()-1);
-            if(currentComp.getParent() != null && coMap.containsKey(currentComp.getParent())){
-                coMap.get(currentComp.getParent()).getComponents().add(currentComp);
-                components.remove(components.size()-1);
-            }
-            counter++;
-        }
-
-        for(ComponentInfo c: coMap.values()){
-            if(c.getParent() == null){
-                response.add(c);
-            }
-        }
-
-        return response;
-    }
-
     private ServerConnection getServerConnection(){
         byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
         String authorization = new String(decodedBytes);
@@ -278,7 +238,7 @@ public class Services {
         return new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
     }
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 300000)
     public void clearCache(){
         cacheManager.getCache("soaServicesCache").clear();
     }

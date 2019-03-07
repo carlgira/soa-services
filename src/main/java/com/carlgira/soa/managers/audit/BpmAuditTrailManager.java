@@ -8,7 +8,6 @@ import oracle.bpm.client.BPMServiceClientFactory;
 import oracle.bpm.services.common.exception.BPMException;
 import oracle.bpm.services.instancequery.IAuditInstance;
 import oracle.bpm.services.instancequery.IInstanceQueryService;
-
 import java.io.IOException;
 import java.util.*;
 
