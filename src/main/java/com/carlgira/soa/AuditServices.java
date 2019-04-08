@@ -54,8 +54,6 @@ public class AuditServices {
 
         Map<Long, ComponentInfo> coMap = components.stream().collect(Collectors.toMap(ComponentInfo::getCikey, Function.identity()));
 
-        System.out.println("Size " + coMap.size());
-
         for(ComponentInfo c : coMap.values()){
             System.out.println(c.getName() + " " + c.getCikey() + " " + c.getParent());
         }

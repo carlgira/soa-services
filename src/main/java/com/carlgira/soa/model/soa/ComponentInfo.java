@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,9 @@ public class ComponentInfo  implements Serializable {
     @Id
     @Column(name="CIKEY")
     private Long cikey;
+
+    @Column(name="FLOW_ID")
+    private BigDecimal flowid;
 
     @Column(name="COMPOSITE_NAME")
     private String name;
@@ -128,6 +132,14 @@ public class ComponentInfo  implements Serializable {
         this.components = components;
     }
 
+    public BigDecimal getFlowid() {
+        return flowid;
+    }
+
+    public void setFlowid(BigDecimal flowid) {
+        this.flowid = flowid;
+    }
+
     public List<TaskInfo> getTasks() {
         return tasks;
     }
@@ -135,6 +147,8 @@ public class ComponentInfo  implements Serializable {
     public void setTasks(List<TaskInfo> tasks) {
         this.tasks = tasks;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

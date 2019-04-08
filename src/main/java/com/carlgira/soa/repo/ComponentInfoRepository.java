@@ -9,4 +9,7 @@ public interface ComponentInfoRepository  extends CrudRepository<ComponentInfo, 
 
     @Query(nativeQuery = true)
     List<ComponentInfo> findByFlowId(Long flowid);
+
+    @Query(nativeQuery = true)
+    List<ComponentInfo> findByTransactionTimeoutException();
 }
