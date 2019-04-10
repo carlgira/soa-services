@@ -2,6 +2,7 @@ package com.carlgira.soa;
 
 import com.carlgira.soa.managers.audit.BpelAuditTrailManager;
 import com.carlgira.soa.managers.audit.BpmAuditTrailManager;
+import com.carlgira.soa.model.BPMAuditEvent;
 import com.carlgira.soa.model.soa.ComponentInfo;
 import com.carlgira.soa.model.soa.TaskInfo;
 import com.carlgira.soa.repo.ComponentInfoRepository;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -94,6 +96,7 @@ public class AuditServices {
         return response;
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping( path = "/audit/bpm/{type}/image.png")
     public ResponseEntity<byte[]> bpmDiagram(@PathVariable("type") String type,
                                                   @RequestParam(value = "cikey", required = true) String cikey) throws Exception {
@@ -110,16 +113,32 @@ public class AuditServices {
         return new ResponseEntity<>(r, headers, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping( path = "/audit/bpm/text")
-    public List<IAuditInstance> getBpmAuditTrail(@RequestParam(value = "cikey", required = true) String cikey) throws Exception {
+    public List<BPMAuditEvent> getBpmAuditTrail(@RequestParam(value = "cikey", required = true) String cikey) throws Exception {
 
         ServerConnection serverConnection = this.getServerConnection();
         BpmAuditTrailManager bpmAuditTrailManager = new BpmAuditTrailManager(serverConnection);
         bpmAuditTrailManager.init();
 
-        return bpmAuditTrailManager.getAuditTrail(cikey);
+        List<BPMAuditEvent> bpmAuditEvents = new ArrayList<>();
+        for(IAuditInstance audit : bpmAuditTrailManager.getAuditTrail(cikey)){
+            BPMAuditEvent bpmAuditEvent = new BPMAuditEvent();
+            bpmAuditEvent.setLabel(audit.getLabel());
+            bpmAuditEvent.setActivityName(audit.getActivityName());
+            bpmAuditEvent.setAuditInstanceType(audit.getAuditInstanceType());
+            bpmAuditEvent.setAuditLog(audit.getAuditLog());
+            bpmAuditEvent.setComponentType(audit.getComponentType());
+            bpmAuditEvent.setCreateTime(audit.getCreateTime());
+            bpmAuditEvent.setFlowElementType(audit.getFlowElementType());
+            bpmAuditEvent.setOperation(audit.getOperation().getType(audit.getAuditInstanceType().equals("START")));
+            bpmAuditEvents.add(bpmAuditEvent);
+        }
+
+        return bpmAuditEvents;
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping( path = "/audit/bpel/text")
     public AuditTrail getBpelAuditTrail(@RequestParam(value = "cikey", required = true) String cikey) throws Exception {
 

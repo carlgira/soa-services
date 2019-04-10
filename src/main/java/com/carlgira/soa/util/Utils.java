@@ -4,11 +4,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.OutputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Created by carlgira on 08/03/2016.
@@ -41,6 +41,23 @@ public class Utils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static String uncompressString(String zippedBase64Str) throws IOException {
+        byte[] decodedBytes = Base64.getDecoder().decode(zippedBase64Str);
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
+        GZIPInputStream gzis = new GZIPInputStream(bais);
+        InputStreamReader reader = new InputStreamReader(gzis);
+        BufferedReader in = new BufferedReader(reader);
+
+        String readed;
+        StringBuilder builder = new StringBuilder();
+        while ((readed = in.readLine()) != null) {
+            builder.append(readed);
+        }
+
+        return builder.toString();
     }
 
 }

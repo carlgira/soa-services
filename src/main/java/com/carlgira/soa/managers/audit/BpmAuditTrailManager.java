@@ -10,6 +10,7 @@ import oracle.bpm.services.instancequery.IAuditInstance;
 import oracle.bpm.services.instancequery.IInstanceQueryService;
 import java.io.IOException;
 import java.util.*;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Created by cgiraldo on 04/05/2017.
@@ -77,4 +78,6 @@ public class BpmAuditTrailManager{
         List<IAuditInstance> auditInstances = this.bpmServiceClientFactory.getBPMServiceClient().getInstanceQueryService().queryAuditInstanceByProcessId(bpmContext, id);
         return auditInstances;
     }
+
+
 }
