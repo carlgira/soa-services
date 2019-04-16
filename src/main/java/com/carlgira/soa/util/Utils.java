@@ -1,13 +1,12 @@
 package com.carlgira.soa.util;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Date;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -60,4 +59,21 @@ public class Utils {
         return builder.toString();
     }
 
+    public static ServerConnection getServerConnection(HttpServletRequest request){
+        String userAuth = request.getHeader("Authorization");
+
+        if(userAuth == null){
+            userAuth = request.getSession().getAttribute("Authorization").toString();
+        }
+        else if(request.getSession().getAttribute("Authorization") == null){
+            request.getSession().setAttribute("Authorization", userAuth);
+        }
+
+        byte[] decodedBytes = Base64.getDecoder().decode(userAuth.split(" ")[1]);
+        String authorization = new String(decodedBytes);
+        String user = authorization.split(":")[0];
+        String password = authorization.split(":")[1];
+
+        return new ServerConnection("t3://" + request.getLocalName() + ":" + request.getLocalPort() + "/soa-infra/", user, password,"");
+    }
 }

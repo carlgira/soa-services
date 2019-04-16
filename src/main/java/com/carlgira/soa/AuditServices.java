@@ -8,6 +8,7 @@ import com.carlgira.soa.model.soa.TaskInfo;
 import com.carlgira.soa.repo.ComponentInfoRepository;
 import com.carlgira.soa.repo.TaskInfoRepository;
 import com.carlgira.soa.util.ServerConnection;
+import com.carlgira.soa.util.Utils;
 import com.oracle.schemas.bpel.audit_trail.audit_trail.AuditTrail;
 import oracle.bpm.services.instancequery.IAuditInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -101,7 +101,7 @@ public class AuditServices {
     public ResponseEntity<byte[]> bpmDiagram(@PathVariable("type") String type,
                                                   @RequestParam(value = "cikey", required = true) String cikey) throws Exception {
 
-        ServerConnection serverConnection = this.getServerConnection();
+        ServerConnection serverConnection = Utils.getServerConnection(request);
         BpmAuditTrailManager bpmAuditTrailManager = new BpmAuditTrailManager(serverConnection);
         bpmAuditTrailManager.init();
 
@@ -117,11 +117,10 @@ public class AuditServices {
     @RequestMapping( path = "/audit/bpm/text")
     public List<BPMAuditEvent> getBpmAuditTrail(@RequestParam(value = "cikey", required = true) String cikey) throws Exception {
 
-        ServerConnection serverConnection = this.getServerConnection();
+        ServerConnection serverConnection = Utils.getServerConnection(request);
+        List<BPMAuditEvent> bpmAuditEvents = new ArrayList<>();
         BpmAuditTrailManager bpmAuditTrailManager = new BpmAuditTrailManager(serverConnection);
         bpmAuditTrailManager.init();
-
-        List<BPMAuditEvent> bpmAuditEvents = new ArrayList<>();
         for(IAuditInstance audit : bpmAuditTrailManager.getAuditTrail(cikey)){
             BPMAuditEvent bpmAuditEvent = new BPMAuditEvent();
             bpmAuditEvent.setLabel(audit.getLabel());
@@ -142,19 +141,12 @@ public class AuditServices {
     @RequestMapping( path = "/audit/bpel/text")
     public AuditTrail getBpelAuditTrail(@RequestParam(value = "cikey", required = true) String cikey) throws Exception {
 
-        ServerConnection serverConnection = this.getServerConnection();
+        ServerConnection serverConnection = Utils.getServerConnection(request);
         BpelAuditTrailManager bpelAuditTrailManager = new BpelAuditTrailManager(serverConnection);
         return bpelAuditTrailManager.getAuditTrail(cikey);
     }
 
-    private ServerConnection getServerConnection(){
-        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
-        String authorization = new String(decodedBytes);
-        String user = authorization.split(":")[0];
-        String password = authorization.split(":")[1];
 
-        return new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
-    }
 
     @Scheduled(fixedDelay = 120000)
     public void clearCache(){

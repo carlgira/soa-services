@@ -1,0 +1,74 @@
+<!--
+ Copyright (c) 2014, 2019, Oracle and/or its affiliates.
+ The Universal Permissive License (UPL), Version 1.0
+ -->
+<div class="oj-hybrid-padding">
+  <h1>Audit</h1>
+
+
+     <oj-popup id="popup1" class="demo-popup"
+       tail="none" position.my.horizontal="center" position.my.vertical="bottom"
+       position.at.horizontal="center" position.at.vertical="bottom"
+       position.of="window" position.offset.y="-10"
+       modality="modal" style="width:80%">
+       <oj-text-area id="text-area" style="height:300px;max-width:100%;border:none;" rows="15"></oj-text-area>
+       <div class="demo-popup-footer">
+         <oj-button id="btnCancel"  on-click="[[cancelFlowListener]]">Cancel</oj-button>
+       </div>
+     </oj-popup>
+
+    <!-- ko if: bpmFlagImg || bpmFlagText -->
+    <br/>
+    <div>
+
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: bpmFlagImg -->
+    <div style="overflow-y: scroll;overflow-x: scroll;overflow: scroll;">
+      <div>
+          <oj-select-one id="auditType"  value="{{auditType}}"  style="width:160px;" on-value-changed="[[valueChangeHandler]]">
+              <oj-option value="image">image</oj-option>
+              <oj-option value="text">text</oj-option>
+          </oj-select-one>
+          <br/><br/>
+      </div>
+      <img data-bind="attr: { src: diagram }"></img>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: bpmFlagText -->
+    <div>
+      <div>
+          <oj-select-one id="auditType"  value="{{auditType}}"  style="width:160px;" on-value-changed="[[valueChangeHandler]]">
+              <oj-option value="image">image</oj-option>
+              <oj-option value="text">text</oj-option>
+          </oj-select-one>
+          <br/><br/>
+      </div>
+
+      <oj-table id='table' data='[[dataprovider]]'
+                                        selection-mode='{"row": "single", "column": "single"}'
+                                        selection='{{selectedItems}}'
+                                        on-selection-changed="{{selectionListener}}"
+                                        scroll-policy='loadMoreOnScroll'
+                                        scroll-policy-options='{"fetchSize": 10}'
+                                        columns='[
+                                                  {"headerText": "Type", "field": "activityName","resizable": "enabled"},
+                                                   {"headerText": "Label", "field": "label","resizable": "enabled"},
+                                                   {"headerText": "Event", "field": "operation","resizable": "enabled"},
+                                                   {"headerText": "Date", "field": "createTime","resizable": "enabled"}
+                                                   ]'
+                                        style='width: 100%;'>
+
+      </oj-table>
+    </div>
+
+    <!-- /ko -->
+
+    <!-- ko if: bpelFlag -->
+    <div>
+        BPEL
+    </div>
+    <!-- /ko -->
+</div>

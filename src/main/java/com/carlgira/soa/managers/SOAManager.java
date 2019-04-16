@@ -77,10 +77,7 @@ public class SOAManager {
 
     public BPELInstance getBpelByCikey(String cikey) throws Exception {
         ComponentInstanceFilter instanceFilter = new ComponentInstanceFilter();
-        instanceFilter.setCompositeInstanceId(cikey);
-
-        //  - with linked exception:
-        //[java.lang.ClassNotFoundException: org.eclipse.persistence.jaxb.JAXBContextFactory]
+        instanceFilter.setId(cikey);
 
         List<ComponentInstance> r = locator.getComponentInstances(instanceFilter);
 

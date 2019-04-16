@@ -8,6 +8,7 @@ import com.carlgira.soa.repo.FlowInfoRepository;
 import com.carlgira.soa.repo.SensorInfoRepository;
 import com.carlgira.soa.repo.TaskInfoRepository;
 import com.carlgira.soa.util.ServerConnection;
+import com.carlgira.soa.util.Utils;
 import oracle.soa.management.facade.flow.FlowInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -52,7 +53,7 @@ public class Services {
     @RequestMapping( path = "/abort",  method = RequestMethod.GET)
     public AbortResponse abortFlow(@RequestParam(value = "flowid", required = true) long flowid){
 
-        ServerConnection serverConnection = this.getServerConnection();
+        ServerConnection serverConnection = Utils.getServerConnection(request);
         SOAManager compositeManager = new SOAManager(serverConnection);
         try {
             compositeManager.init();
@@ -72,7 +73,7 @@ public class Services {
     @RequestMapping( path = "/delete",  method = RequestMethod.GET)
     public AbortResponse deleteFlow(@RequestParam(value = "flowid", required = true) long flowid){
 
-        ServerConnection serverConnection = this.getServerConnection();
+        ServerConnection serverConnection = Utils.getServerConnection(request);
         SOAManager compositeManager = new SOAManager(serverConnection);
         try {
             compositeManager.init();
@@ -92,7 +93,7 @@ public class Services {
     @RequestMapping( path = "/abort", method = RequestMethod.POST)
     public AbortResponse abortFlows(@RequestBody AbortRequest abortRequest){
 
-        ServerConnection serverConnection = this.getServerConnection();
+        ServerConnection serverConnection = Utils.getServerConnection(request);
         SOAManager compositeManager = new SOAManager(serverConnection);
         try {
             compositeManager.init();
@@ -186,7 +187,7 @@ public class Services {
         DeployedCompositeResponse response = new DeployedCompositeResponse();
         List<DeployedComposite> composites = new ArrayList<>();
 
-        ServerConnection serverConnection = this.getServerConnection();
+        ServerConnection serverConnection = Utils.getServerConnection(request);
 
         CompositeManager.initConnection(this.request.getLocalName(), String.valueOf(this.request.getLocalPort()), serverConnection.adminUser, serverConnection.adminPassword);
         String value = CompositeManager.listDeployedComposites(CompositeManager.getCompositeLifeCycleMBean());
@@ -225,15 +226,6 @@ public class Services {
         List<SensorInfo> s = sensorInfoRepository.findByCikey(cikey);
 
         return s;
-    }
-
-    private ServerConnection getServerConnection(){
-        byte[] decodedBytes = Base64.getDecoder().decode(request.getHeader("Authorization").split(" ")[1]);
-        String authorization = new String(decodedBytes);
-        String user = authorization.split(":")[0];
-        String password = authorization.split(":")[1];
-
-        return new ServerConnection("t3://" + this.request.getLocalName() + ":" + this.request.getLocalPort() + "/soa-infra/", user, password,"");
     }
 
     @Scheduled(fixedDelay = 300000)

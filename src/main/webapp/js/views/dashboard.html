@@ -1,0 +1,218 @@
+<!--
+ Copyright (c) 2014, 2019, Oracle and/or its affiliates.
+ The Universal Permissive License (UPL), Version 1.0
+ -->
+<div class="oj-hybrid-padding">
+  <div>
+    <div id="dialogWrapper">
+         <oj-dialog style="display:none;width:500px;height:400px;" id="scrollingDialog" dialog-title="Composites" modality="modeless">
+           <div id="componentDemoContent">
+               <oj-tree-view id="treeview"
+                             data="[[compositesTree]]"
+                             item.renderer="[[oj.KnockoutTemplateUtils.getRenderer('item_template', true)]]"
+                             on-selection-changed="[[compositesTreeSelectionChanged]]"
+                             selection-mode="single"
+                             aria-label="Tree View with JSON Data">
+               </oj-tree-view>
+
+               <script type="text/html" id="item_template">
+                 <li>
+                   <span class="oj-treeview-item-icon"></span><span class="oj-treeview-item-text" data-bind="text: title"></span>
+                 </li>
+               </script>
+             </div>
+         </oj-dialog>
+    </div>
+
+    <div id="asd" >
+         <oj-popup id="popup1" class="demo-popup"
+           tail="none" position.my.horizontal="center" position.my.vertical="bottom"
+           position.at.horizontal="center" position.at.vertical="bottom"
+           position.of="window" position.offset.y="-10"
+           modality="modal" style="width:80%">
+
+           <div id="componentDemoContent" style="width:100%;height:400px;overflow-y: scroll;">
+             <oj-label id="label" class="oj-label-inline" for="filter">Filter:</oj-label>
+             <oj-input-text id="filter" placeholder="Type to filter" on-raw-value-changed="[[filterComposites]]"></oj-input-text>
+             <oj-button id="clearButton"
+                     on-oj-action='[[clearFilter]]'
+                     display='icons'
+                     chroming='half'>
+                <span slot='startIcon' class='oj-fwk-icon oj-fwk-icon-cross03'></span>
+                Clear
+             </oj-button>
+
+            <oj-table id="tableFlow" aria-label="Tasks Table" data="[[flowDataTree]]" row-renderer='[[oj.KnockoutTemplateUtils.getRenderer("row_template", true)]]'
+              columns='[{"headerText": "Component", "sortProperty": "name"},
+              {"headerText": "Cikey", "sortProperty": "cikey"},
+              {"headerText": "Type", "sortProperty": "type"},
+              {"headerText": "State", "sortProperty": "state"},
+              {"headerText": "Modify Date", "sortProperty": "modifyDate"}]'>
+            </oj-table>
+
+            <script type="text/html" id="row_template">
+                <tr>
+                    <td>
+                      <oj-row-expander context="[[$context.rowContext]]"></oj-row-expander>
+                      <span><oj-bind-text value="[[$context.data.name]]"></oj-bind-text></span>
+                    </td>
+                    <td>
+                        <a data-bind="attr: { href: '?root=customers&id=' + [[$context.data.cikey]] + '&type=' + [[$context.data.type]]}" target="_blank">
+                          <span><oj-bind-text value="[[$context.data.cikey]]"></oj-bind-text></span>
+                        </a>
+                    </td>
+                    <td>
+                      <span><oj-bind-text value="[[$context.data.type]]"></oj-bind-text></span>
+                    </td>
+                    <td>
+                      <span><oj-bind-text value="[[$context.data.state]]"></oj-bind-text></span>
+                    </td>
+                    <td>
+                      <span><oj-bind-text value="[[$context.data.modifyDate]]"></oj-bind-text></span>
+                    </td>
+                  </tr>
+            </script>
+          </div>
+          <div class="demo-popup-footer">
+            <oj-button id="btnCancel"  on-click="[[cancelFlowListener]]">Cancel</oj-button>
+          </div>
+          </oj-popup>
+    </div>
+
+    <table>
+      <tr>
+        <td>
+          <div class="oj-flex oj-flex-items-pad">
+            <div class="oj-flex-item">
+              <oj-input-text id="compositeName" disabled="true" value="{{compositeSelection}}" style="width:250px;"></oj-input-text>
+            </div>
+            <div class="oj-flex-item">
+              <oj-button id='compositeButton' on-oj-action='[[compositeAction]]' data-bind="click: compositeHandleOpen">All Composites</oj-button>
+            </div>
+          </div>
+        </td>
+        <td rowspan="2">
+          <div class="oj-flex">
+            <div class="oj-flex-item">
+              <oj-label for="text-input" class="oj-label-inline">Filter Date</oj-label>
+            </div>
+            <div class="oj-flex-item">
+              <oj-radioset labelled-by="mainlabelid" value="{{dateFilterType}}" on-click='[[chooseTypeDate]]'>
+                 <oj-option id="rock" value="relative">Relative</oj-option>
+                 <br/>
+                 <oj-option id="sb" value="absolute">Absolute</oj-option>
+              </oj-radioset>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="oj-flex oj-flex-items-pad">
+           <div class="oj-flex-item">
+             <oj-select-one id="dateFilterCombo"  value="{{dateFilterName}}"  style="width:160px;" disabled={{disabledDate1}}>
+                 <oj-option value="minute">minute</oj-option>
+                 <oj-option value="hour">hour</oj-option>
+                 <oj-option value="day">day</oj-option>
+                 <oj-option value="week">week</oj-option>
+                 <oj-option value="month">month</oj-option>
+             </oj-select-one>
+           </div>
+           <div class="oj-flex-item">
+             <oj-input-text id="dateFilterValue" value="{{dateFilterValue}}"  style="width:160px;" disabled={{disabledDate1}}></oj-input-text>
+           </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="oj-flex oj-flex-items-pad">
+            <div class="oj-flex-item">
+            <oj-label for="text-input" class="oj-label-inline">Search Id</oj-label>
+            </div>
+            <div class="oj-flex-item">
+            <oj-select-one id="searchIdCombo" value="{{searchIdName}}"  style="width:100px;" on-value-changed='[[chooseTypeId]]'>
+                <oj-option value="flowid">flowid</oj-option>
+                <oj-option value="ecid">ecid</oj-option>
+                <oj-option value="cikey">cikey</oj-option>
+                <oj-option value="sensor">sensor</oj-option>
+            </oj-select-one>
+            </div>
+            <div class="oj-flex-item">
+              <oj-select-one id="sensorName"  disabled="{{disabledEcid}}" style="width:200px" options="{{sensorListNames}}" value="{{searchIdSensorName}}">
+              </oj-select-one>
+            </div>
+            <div class="oj-flex-item">
+              <oj-input-text id="searchIdValue" value="{{searchIdValue}}"></oj-input-text>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="oj-flex oj-flex-items-pad">
+           <div class="oj-flex-item">
+             <oj-input-date-time id="startDateTime" value='{{startDateTime}}' style="width:160px;" disabled={{disabledDate2}}></oj-input-date-time>
+           </div>
+           <div class="oj-flex-item">
+             <oj-input-date-time id="endDateTime" value='{{endDateTime}}' style="width:160px;" disabled={{disabledDate2}}></oj-input-date-time>
+           </div>
+           </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="oj-flex oj-flex-items-pad">
+            <div class="oj-flex-item">
+            <oj-label for="text-input" class="oj-label-inline">State</oj-label>
+            </div>
+            <div class="oj-flex-item">
+            <oj-select-one value="{{compositeState}}"  style="width:100px;">
+                <oj-option value="all">all</oj-option>
+                <oj-option value="running">running</oj-option>
+                <oj-option value="terminated">terminated</oj-option>
+            </oj-select-one>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="oj-flex oj-flex-items-pad">
+            <div class="oj-flex-item">
+            <oj-label for="text-input" class="oj-label-inline">Fault</oj-label>
+            </div>
+            <div class="oj-flex-item">
+            <oj-select-one value="{{compositeFault}}"  style="width:100px;">
+                <oj-option value="all">all</oj-option>
+                <oj-option value="not_faulted">not_faulted</oj-option>
+                <oj-option value="faulted">faulted</oj-option>
+            </oj-select-one>
+            </div>
+          </div>
+        </td>
+        <td></td>
+        <td>
+          <oj-button id='searchButton' on-oj-action='[[searchFilterAction]]' disable={{disableSearch}}>Search</oj-button>
+        </td>
+      </tr>
+    </table>
+
+    </div>
+
+  </div>
+  <div>
+    <oj-table id='table' aria-label='Departments Table'
+                                      data='[[dataprovider]]'
+                                      dnd='{"reorder": {"columns": "enabled"}}'
+                                      selection-mode='{"row": "single", "column": "single"}'
+                                      selection='{{selectedItems}}'
+                                      on-selection-changed="{{selectionListener}}"
+                                      scroll-policy='loadMoreOnScroll'
+                                      scroll-policy-options='{"fetchSize": 10}'
+                                      columns='[{"headerText": "FlowId", "field": "flowid", "headerClassName": "oj-sm-only-hide","className": "oj-sm-only-hide", "resizable": "enabled"},
+                                                 {"headerText": "Composite", "field": "name","resizable": "enabled"},
+                                                 {"headerText": "Revision", "field": "revision","resizable": "enabled"},
+                                                 {"headerText": "Creation Date", "field": "creationDate","resizable": "enabled"},
+                                                 {"headerText": "Modify Date", "field": "modifyDate","resizable": "enabled"},
+                                                 {"headerText": "State", "field": "state","resizable": "enabled"},
+                                                 {"headerText": "Faults", "field": "fault","resizable": "enabled"}
+                                                 ]'
+                                      style='width: 100%;'>
+      </oj-table>
+  </div>
+</div>
