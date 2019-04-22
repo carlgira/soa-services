@@ -9,7 +9,16 @@ import com.carlgira.soa.repo.ComponentInfoRepository;
 import com.carlgira.soa.repo.TaskInfoRepository;
 import com.carlgira.soa.util.ServerConnection;
 import com.carlgira.soa.util.Utils;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.oracle.schemas.bpel.audit_trail.audit_trail.AuditTrail;
+import com.oracle.schemas.bpel.audit_trail.audit_trail.Details;
+import com.oracle.schemas.bpel.audit_trail.audit_trail.Event;
 import oracle.bpm.services.instancequery.IAuditInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -22,9 +31,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import javax.json.JsonArray;
+import javax.rmi.CORBA.Util;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.util.JAXBSource;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -143,10 +158,11 @@ public class AuditServices {
 
         ServerConnection serverConnection = Utils.getServerConnection(request);
         BpelAuditTrailManager bpelAuditTrailManager = new BpelAuditTrailManager(serverConnection);
-        return bpelAuditTrailManager.getAuditTrail(cikey);
+
+        AuditTrail auditTrail = bpelAuditTrailManager.getAuditTrail(cikey);
+
+        return auditTrail;
     }
-
-
 
     @Scheduled(fixedDelay = 120000)
     public void clearCache(){

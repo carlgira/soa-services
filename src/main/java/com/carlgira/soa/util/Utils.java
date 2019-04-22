@@ -1,10 +1,17 @@
 package com.carlgira.soa.util;
 
+import org.w3c.dom.Document;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.util.Base64;
 import java.util.zip.GZIPInputStream;
@@ -57,6 +64,36 @@ public class Utils {
         }
 
         return builder.toString();
+    }
+
+    private static void writeXmlDocumentToXmlFile(Document xmlDocument)
+    {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer;
+        try {
+            transformer = tf.newTransformer();
+
+            // Uncomment if you do not require XML declaration
+            // transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+
+            //A character stream that collects its output in a string buffer,
+            //which can then be used to construct a string.
+            StringWriter writer = new StringWriter();
+
+            //transform document to string
+            transformer.transform(new DOMSource(xmlDocument), new StreamResult(writer));
+
+            String xmlString = writer.getBuffer().toString();
+            System.out.println(xmlString);                      //Print to console or logs
+        }
+        catch (TransformerException e)
+        {
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static ServerConnection getServerConnection(HttpServletRequest request){

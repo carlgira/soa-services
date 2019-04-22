@@ -40,4 +40,17 @@ public class BpelAuditTrailManager{
 
         return auditTrail;
     }
+
+    public String getAuditTrailString(String id) throws Exception {
+        SOAManager soaManager = new SOAManager(this.serverConnection);
+        soaManager.init();
+        BPELInstance bpelInstance = soaManager.getBpelByCikey(id);
+
+        if(bpelInstance != null){
+            return bpelInstance.getAuditTrail();
+        }
+        soaManager.close();
+
+        return null;
+    }
 }
