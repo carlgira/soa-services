@@ -45,6 +45,9 @@ public class FlowInfo implements Serializable {
     @Column(name="RECOVERABLE_FAULTS")
     private BigDecimal recoverableFaults;
 
+    @Column(name="STRING_VALUE")
+    private String sensorValue;
+
     public FlowInfo() {
     }
 
@@ -134,5 +137,13 @@ public class FlowInfo implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSensorValue() {
+        return sensorValue;
+    }
+
+    public void setSensorValue(String sensorValue) {
+        this.sensorValue = sensorValue;
     }
 }

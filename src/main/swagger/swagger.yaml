@@ -1,0 +1,236 @@
+openapi: 3.0.1
+info:
+  title: SOA Services
+  description: SOA Services
+  version: 1.0.0
+servers:
+  - url: /soa-services
+paths:
+  /composites:
+    post:
+      summary: Search for composites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlowInfoRequest'
+            examples:
+              findByDates:
+                value:
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findByCompositeNameAndDates:
+                value:
+                  partition: "TRIE"
+                  composite: "OSAuthorizeCredit-v3"
+                  revision: "3.0.0-SNAPSHOT"
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findByFlowIdAndDates:
+                value:
+                  flowids: [5633223]
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findByFlowIdAndCompositeNameAndDates:
+                value:
+                  flowids: [5633223]
+                  partition: "TRIE"
+                  composite: "OSAuthorizeCredit-v3"
+                  revision: "3.0.0-SNAPSHOT"
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findByCikeyAndDates:
+                value:
+                  cikeys: [5633223]
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findByCikeyAndCompositeNameAndDates:
+                value:
+                  cikeys: [5633223]
+                  partition: "TRIE"
+                  composite: "OSAuthorizeCredit-v3"
+                  revision: "3.0.0-SNAPSHOT"
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findByEcidAndDates:
+                value:
+                  ecids: ["38e4f9b3-2094-4ea1-9e30-09ecf7900932-00068ad6"]
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findByEcidAndCompositeNameAndDates:
+                value:
+                  ecids: ["38e4f9b3-2094-4ea1-9e30-09ecf7900932-00068ad6"]
+                  partition: "TRIE"
+                  composite: "OSAuthorizeCredit-v3"
+                  revision: "3.0.0-SNAPSHOT"
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findBySensorAndCompositeNameAndDates:
+                value:
+                  sensorName: "idCustomerSelling"
+                  sensorValues: ["13874027161937047610733942467493261916"]
+                  partition: "TRIE"
+                  composite: "OSAuthorizeCredit-v3"
+                  revision: "3.0.0-SNAPSHOT"
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+              findSensorByFlowIdAnCompositeNameAnddDates:
+                value:
+                  flowids: [5633223]
+                  sensorName: "idCustomerSelling"
+                  partition: "TRIE"
+                  composite: "OSAuthorizeCredit-v3"
+                  revision: "3.0.0-SNAPSHOT"
+                  state: "all"
+                  fault: "all"
+                  startDate: "2019-06-02T19:12:37"
+                  endDate: "2019-06-03T10:12:37"
+                  page: 0
+                  size: 100
+      responses:
+        '200':
+          description: A user object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowInfo'
+components:
+  schemas:
+    FlowInfo:
+      type: object
+      properties:
+        cikey:
+          type: integer
+          format: int64
+        flowid:
+          type: integer
+          format: int64
+        ecid:
+          type: string
+        sensorValue:
+          type: string
+        name:
+          type: string
+        revision:
+          type: string
+        type:
+          type: string
+        creationDate:
+          type: string
+          description: yyyy-MM-ddTHH:mm:ss
+          format: date-time
+        modifyDate:
+          type: string
+          description: yyyy-MM-ddTHH:mm:ss
+          format: date-time
+        activeComponents:
+          type: integer
+          format: int64
+        unhandledFaults:
+          type: integer
+          format: int64
+        recoverableFaults:
+          type: integer
+          format: int64
+    FlowInfoRequest:
+      type: object
+      properties:
+        composite:
+          type: string
+          description: Composite name.
+        partition:
+          type: string
+          description: Composite partition
+        revision:
+          type: string
+          description: Composite revision
+        sensorName:
+          type: string
+        state:
+          type: string
+          description: Flow state
+          enum:
+            - running
+            - terminated
+            - all
+        fault:
+          type: string
+          description: Flow state
+          enum:
+            - faulted
+            - not_faulted
+            - all
+        startDate:
+          type: string
+          description: yyyy-MM-ddTHH:mm:ss
+          format: date-time
+        endDate:
+          type: string
+          description: yyyy-MM-ddTHH:mm:ss
+          format: date-time
+        flowids:
+          type: array
+          maxItems: 1
+          items:
+            type: string
+            format: int64
+        cikeys:
+          type: array
+          maxItems: 1
+          items:
+            type: string
+            format: int64
+        ecids:
+          type: array
+          maxItems: 1
+          items:
+            type: string
+            format: string
+        sensorValues:
+          type: array
+          maxItems: 1
+          items:
+            type: string
+            format: string
+        page:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64

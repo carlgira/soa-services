@@ -107,14 +107,33 @@
         <!-- BPM -->
     </dependencies>
 
-    <!--
+
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>io.github.swagger2markup</groupId>
+                <artifactId>swagger2markup-maven-plugin</artifactId>
+                <version>1.3.7</version>
+                <configuration>
+                    <swaggerInput>${project.basedir}/src/main/swagger/swagger.yaml</swaggerInput>
+                    <outputDir>${project.build.directory}/asciidoc</outputDir>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.3</version>
+                <configuration>
+                    <sourceDirectory>src/doc/asciidoc</sourceDirectory>
+                    <sourceDocumentName>index.adoc</sourceDocumentName>
+                    <backend>html5</backend>
+                    <attributes>
+                        <toc>left</toc>
+                        <generated>${project.build.directory}/asciidoc</generated>
+                    </attributes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-    -->
+
 </project>

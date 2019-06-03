@@ -137,7 +137,11 @@ public class Services {
         }
         else if(r.getFlowids() != null && !r.getFlowids().isEmpty()){
 
-            if(r.getComposite() != null && r.getComposite().trim().length() > 0 && r.getRevision() != null && r.getRevision().trim().length() > 0){
+            if(r.getComposite() != null && r.getComposite().trim().length() > 0 && r.getRevision() != null && r.getRevision().trim().length() > 0 && r.getSensorName() != null){
+                cubeInstances = this.compositeRepository.findSensorByFlowIdAndDates(r.getFlowids().get(0),  r.getSensorName() , r.getComposite(), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
+                System.out.println("this.compositeRepository.findSensorByFlowIdAndDates");
+            }
+            else if(r.getComposite() != null && r.getComposite().trim().length() > 0 && r.getRevision() != null && r.getRevision().trim().length() > 0){
                 cubeInstances = this.compositeRepository.findByFlowIdAndNameAndDates(r.getFlowids().get(0),  r.getComposite() , r.getRevision(), new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()), r.getState(), r.getFault(), r.getSize()*r.getPage(), r.getSize());
                 System.out.println("this.compositeRepository.findByFlowIdAndNameAndDates");
             }
